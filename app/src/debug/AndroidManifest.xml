@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Debug only: lets the UI-check script open the built-in apps with `am start`. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <application>
+        <activity android:name="com.pacaembu.apps.CalculatorActivity" android:exported="true" tools:replace="android:exported" />
+        <activity android:name="com.pacaembu.apps.NotesActivity" android:exported="true" tools:replace="android:exported" />
+        <activity android:name="com.pacaembu.apps.ClockActivity" android:exported="true" tools:replace="android:exported" />
+        <activity android:name="com.pacaembu.apps.WeatherActivity" android:exported="true" tools:replace="android:exported" />
+        <activity android:name="com.pacaembu.lock.LockActivity" android:exported="true" tools:replace="android:exported" />
+    </application>
+</manifest>
