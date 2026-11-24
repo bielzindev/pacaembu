@@ -4,6 +4,9 @@ on:
   push:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   screenshots:
     runs-on: ubuntu-latest
@@ -37,3 +40,12 @@ jobs:
         with:
           name: ui-shots
           path: shots/
+      - name: Publish screenshots to the ui-shots branch
+        if: always()
+        run: |
+          cd shots
+          git init -q -b ui-shots
+          git config user.name "ui-check"; git config user.email "ui-check@users.noreply.github.com"
+          echo "run ${{ github.run_number }} commit ${{ github.sha }}" > RUN.txt
+          git add -A && git commit -qm "Screenshots for run ${{ github.run_number }}"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" ui-shots
