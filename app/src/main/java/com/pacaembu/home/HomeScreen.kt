@@ -171,7 +171,7 @@ private fun HomeLoaded(st: HomeState, g: Geo, topDp: Dp) {
                 if (!draggedIsFolder) { delay(450); st.folderTarget = h.target }
                 else { delay(250); st.applyHoverMove(h.copy(center = false)) }
             } else {
-                delay(110); st.applyHoverMove(h)
+                delay(300); st.applyHoverMove(h)
             }
         }
         var edge by remember { mutableIntStateOf(0) }

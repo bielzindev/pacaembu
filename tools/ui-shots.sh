@@ -21,7 +21,7 @@ adb shell input keyevent KEYCODE_BACK; sleep 2
 # Pixel 6 grid: column centres 135/405/675/945, first row icon centre y=248, rows 312px apart.
 touch() { adb shell input motionevent "$1" "$2" "$3"; }
 glide() { # glide x1 y1 x2 y2: move the held finger in small steps
-  for i in 1 2 3 4 5 6 7 8; do touch MOVE $(( $1 + ($3 - $1) * i / 8 )) $(( $2 + ($4 - $2) * i / 8 )); sleep 0.08; done
+  for i in 1 2 3 4 5 6 7 8; do touch MOVE $(( $1 + ($3 - $1) * i / 8 )) $(( $2 + ($4 - $2) * i / 8 )); sleep 0.03; done
 }
 # long press Calendar -> edit mode with the icon lifted under the finger
 touch DOWN 405 248; sleep 1.3
