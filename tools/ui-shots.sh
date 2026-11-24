@@ -18,12 +18,26 @@ adb shell input swipe 150 1200 950 1200 250; shot 04-spotlight
 adb shell input keyevent KEYCODE_HOME; sleep 2
 adb shell input swipe 540 300 540 1700 500; shot 05-notification-center
 adb shell input keyevent KEYCODE_BACK; sleep 2
-# long press the second icon of the first row -> edit mode
-adb shell input swipe 405 420 405 420 1500; shot 06-edit-mode 1
-# drag it to the end of the row
-adb shell input swipe 405 420 945 420 2500; shot 07-after-drag 2
-adb shell input keyevent KEYCODE_HOME; shot 08-edit-done 2
-start .apps.SettingsActivity; shot 10-settings
+# Pixel 6 grid: column centres 135/405/675/945, first row icon centre y=248, rows 312px apart.
+touch() { adb shell input motionevent "$1" "$2" "$3"; }
+glide() { # glide x1 y1 x2 y2: move the held finger in small steps
+  for i in 1 2 3 4 5 6 7 8; do touch MOVE $(( $1 + ($3 - $1) * i / 8 )) $(( $2 + ($4 - $2) * i / 8 )); sleep 0.08; done
+}
+# long press Calendar -> edit mode with the icon lifted under the finger
+touch DOWN 405 248; sleep 1.3
+adb exec-out screencap -p > shots/06-edit-mode.png; echo "shot 06-edit-mode"
+# drag it to the end of the first row and let go
+glide 405 248 945 248; sleep 0.8; touch UP 945 248
+shot 07-after-drag 2
+# drag Clock onto the centre of Notes and hold -> folder
+touch DOWN 405 560; sleep 1.3
+glide 405 560 135 872; sleep 1.2
+adb exec-out screencap -p > shots/08-folder-target.png; echo "shot 08-folder-target"
+touch UP 135 872
+shot 09-folder-open 2
+adb shell input keyevent KEYCODE_HOME; sleep 1
+adb shell input keyevent KEYCODE_HOME; shot 09b-edit-done 2
+adb shell am start -n "$P/com.pacaembu.apps.SettingsActivity" >/dev/null; shot 10-settings
 adb shell input keyevent KEYCODE_BACK
 start com.pacaembu.apps.CalculatorActivity; shot 11-calculator
 start com.pacaembu.apps.NotesActivity; shot 12-notes

@@ -9,6 +9,38 @@ import xml.etree.ElementTree as ET
 
 def f(v): return float(v) if v is not None else 0.0
 
+ARGS = {"m": 2, "l": 2, "h": 1, "v": 1, "c": 6, "s": 4, "q": 4, "t": 2, "a": 7, "z": 0}
+NUM = re.compile(r"[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?")
+
+def normalize(d):
+    """Rewrites SVG path data with explicit separators. SVG allows arc flags to be glued to the
+    next number ("a10 10 0 0128 5"); Android's path parsers do not, so they mangle the glyph."""
+    out = []
+    i, n = 0, len(d)
+    cmd = None
+    argi = 0
+    while i < n:
+        ch = d[i]
+        if ch.isspace() or ch == ",":
+            i += 1; continue
+        if ch.isalpha():
+            cmd = ch; argi = 0; out.append(ch); i += 1
+            continue
+        k = ARGS[cmd.lower()]
+        if cmd.lower() == "a" and argi % 7 in (3, 4):
+            out.append(ch); i += 1  # a single-digit flag
+        else:
+            m = NUM.match(d, i)
+            if not m: raise ValueError(d[i:i+20])
+            out.append(m.group(0)); i = m.end()
+        argi += 1
+    # join: letters stick to the following number, numbers separated by spaces
+    res = ""
+    for t in out:
+        if res and not res[-1].isalpha() and not t.isalpha(): res += " "
+        res += t
+    return res
+
 def circle(cx, cy, rx, ry):
     return (f"M{cx-rx},{cy}a{rx},{ry} 0 1,0 {2*rx},0a{rx},{ry} 0 1,0 {-2*rx},0z")
 
@@ -45,7 +77,7 @@ def convert(src, name):
         elif tag == "line":
             d = f"M{el.get('x1')},{el.get('y1')}L{el.get('x2')},{el.get('y2')}"
         else: continue
-        attrs = [f'android:pathData="{d}"']
+        attrs = [f'android:pathData="{normalize(d)}"']
         fill = el.get("fill")
         stroke = el.get("stroke")
         if fill != "none": attrs.append('android:fillColor="#FFFFFFFF"')

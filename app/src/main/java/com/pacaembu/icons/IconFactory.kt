@@ -92,7 +92,7 @@ object IconFactory {
     }
 
     private fun glyph(c: Context, cv: Canvas, res: Int, color: Int, s: Float, frac: Float, dy: Float = 0f) {
-        val d = ContextCompat.getDrawable(c, res)?.mutate() ?: return
+        val d = runCatching { ContextCompat.getDrawable(c, res)?.mutate() }.getOrNull() ?: return
         val g = (s * frac).toInt()
         val l = ((s - g) / 2).toInt()
         val t = ((s - g) / 2 + dy).toInt()
@@ -121,7 +121,7 @@ object IconFactory {
 
     private fun weather(c: Context, cv: Canvas, s: Float) {
         glyph(c, cv, R.drawable.ion_sunny, 0xFFFFD43B.toInt(), s, 0.46f, dy = -s * 0.12f)
-        val d = ContextCompat.getDrawable(c, R.drawable.ion_cloudy)?.mutate() ?: return
+        val d = runCatching { ContextCompat.getDrawable(c, R.drawable.ion_cloudy)?.mutate() }.getOrNull() ?: return
         d.setTint(Color.WHITE)
         d.setBounds((s * 0.30f).toInt(), (s * 0.18f).toInt(), (s * 0.90f).toInt(), (s * 0.78f).toInt()); d.draw(cv)
         val t = Prefs.lastTemp.value.ifEmpty { "" }
