@@ -6,6 +6,8 @@ artwork is included — icons are drawn procedurally with glyphs from the open-s
 [Ionicons](https://github.com/ionic-team/ionicons) repository (MIT), and any third-party
 icon pack in the ADW/Nova format can be applied on top.
 
+![Screenshots from the emulator UI check](docs/screenshots.png)
+
 ## What's in it
 
 - **Home screen (SpringBoard):** 4-column pages, glass dock with reflections, page dots,
